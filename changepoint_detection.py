@@ -1,6 +1,6 @@
 from numpy import genfromtxt
 import matplotlib.pyplot as pyplot
-        
+
         
 DIR_FILENAME = 'test_data.csv'
 x = genfromtxt(DIR_FILENAME, delimiter=',')
