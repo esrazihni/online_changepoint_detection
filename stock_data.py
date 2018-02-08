@@ -8,7 +8,8 @@ from bayesian_ocd import *
 
 def get_stock_data(name):
     # https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=AMZN&interval=60min&apikey=D8N9ZL5YTPIWAD99
-    with urllib.request.urlopen('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&interval=1min&apikey=D8N9ZL5YTPIWAD99' % name) as url:
+    #with urllib.request.urlopen('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=%s&interval=1min&apikey=D8N9ZL5YTPIWAD99' % name) as url:
+    with urllib.request.urlopen('https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=%s&interval=1min&apikey=D8N9ZL5YTPIWAD99' % name) as url:
         data = json.loads(url.read().decode())
         if 'Error Message' in data:
             print('Service is not available')
@@ -17,31 +18,37 @@ def get_stock_data(name):
         else:
             dates = []
             x = []
-            all_data = list(data['Time Series (1min)'].keys())
+            all_data = list(data['Monthly Time Series'].keys())
+            #all_data = list(data['Time Series (1min)'].keys())
             for data_point in all_data:
-                dates.append(datetime.datetime.strptime(data_point, '%Y-%m-%d %H:%M:%S'))
+                dates.append(datetime.datetime.strptime(data_point, '%Y-%m-%d'))
+                #dates.append(datetime.datetime.strptime(data_point, '%Y-%m-%d %H:%M:%S'))
                 #print(data['Time Series (1min)'][data_point]['4. close'])
-                x.append(float(data['Time Series (1min)'][data_point]['4. close']))
+                x.append(float(data['Monthly Time Series'][data_point]['4. close']))
+                #x.append(float(data['Time Series (1min)'][data_point]['4. close']))
         #x=[float(price)]
         #dates=[datetime.datetime.strptime(last_date, '%Y-%m-%d %H:%M:%S')]
     return x,dates
 
 def plot_data(i):
     x_dates = get_stock_data(stock_symbol)
+    return_len = len(x_dates[0])
     
     #print(prob_r)
     global dates_new
     global x_new
 
-    print(len(x_dates[0]))
+
     if(len(x_new)==0):
-        for x_id, x_date in enumerate(x_dates[0]):
-            if(x_id > 0):
-                x_new.append((x_date/x_dates[0][x_id-1])-1)
-        dates_new = x_dates[1][1:]
+        if (return_len > 0):
+            for x_id, x_date in enumerate(x_dates[0]):
+                if(x_id > 0):
+                    x_new.append((x_date/x_dates[0][x_id-1])-1)
+            dates_new = x_dates[1][1:]
     else:
-        x_new.append((x_dates[0][len(x_dates[0])]/x_dates[0][len(x_dates[0])-1])-1)
-        dates_new.append(x_dates[1][-1])
+        if(return_len>0):
+            x_new.append((x_dates[0][return_len-1]/x_dates[0][return_len-2])-1)
+            dates_new.append(x_dates[1][-1])
 
     print(x_new)
 
@@ -68,5 +75,5 @@ ax2 = fig.add_subplot(2,1,2)
 
 #ask for new data every 20 seconds
 
-ani = animation.FuncAnimation(fig, plot_data, interval=20000)
+ani = animation.FuncAnimation(fig, plot_data, interval=10000)
 plt.show()

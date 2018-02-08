@@ -41,7 +41,7 @@ def update_stats(x,mu,alpha,kappa,beta):
     mu, alpha, kappa, beta = (kappa*mu + x) / (kappa+1.), alpha+0.5, kappa+1., beta +(kappa*(x-mu)**2)/(2*(kappa+1.))
     return mu, alpha, kappa, beta
 
-def inference(data, mu0 = 0, kappa0 = 1, alpha0= 0.1, beta0= 0.01, lam = [200]):
+def inference(data, mu0 = 0, kappa0 = 1, alpha0= 1, beta0= 0.0001, lam = [200]):
 #Initialize
     prob_r = np.zeros((len(data) + 1, len(data) + 1))
     prob_r[0, 0] = 1
