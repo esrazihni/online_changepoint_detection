@@ -75,8 +75,13 @@ def plot_data(i):
         ax.plot_date(x_dates_2[1], x_dates_2[0], markersize=0.5)
     else:
         x_dates = get_stock_data(stock_symbol)
+        x_data_new = []
+        for x_id, x_date in enumerate(x_dates[0]):
+            if(x_id > 0):
+                x_data_new.append((x_date/x_dates[0][x_id-1])-1)
         ax.clear()
-        ax.plot_date(x_dates[1], x_dates[0], markersize=0.5)
+        #ax.plot_date(x_dates[1], x_dates[0], markersize=0.5)
+        ax.plot_date(x_dates[1][1:], x_data_new,'b-', markersize=0.5)
 
 #AMZN
 #MSFT
