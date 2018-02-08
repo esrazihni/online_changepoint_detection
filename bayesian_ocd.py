@@ -43,43 +43,43 @@ def update_stats(x,mu,alpha,kappa,beta):
 
 def inference(data, mu0 = 0, kappa0 = 1, alpha0= 0.1, beta0= 0.01, lam = [200]):
 #Initialize
-prob_r = np.zeros((len(data) + 1, len(data) + 1))
-prob_r[0, 0] = 1
-mu, kappa, alpha, beta = np.array([mu0]), np.array([kappa0]), np.array([alpha0]), np.array([beta0])
+    prob_r = np.zeros((len(data) + 1, len(data) + 1))
+    prob_r[0, 0] = 1
+    mu, kappa, alpha, beta = np.array([mu0]), np.array([kappa0]), np.array([alpha0]), np.array([beta0])
 
-#Start iteration   
-for t,x in enumerate(data):      
-    #Calculate predictive probability for new data point
-    pred = pred_prob(x,mu,alpha,kappa,beta)
-    
-    #Calculate growth probability 
-    prob_r[1:t+2,t+1] = prob_r[:t+1,t]* pred * (1-const_hazard(t+1,lam))
-
-    #Calculate changepoint probability
-    prob_r[0,t+1] = np.sum( prob_r[:t+1,t] * pred * const_hazard(t+1,lam))
-    
-    #Calculate evidence
-    sum_prob_r =  np.sum(prob_r[:,t+1])
-    
-    #Run length distribution
-    prob_r[:,t+1] /= sum_prob_r
-    
-    #Update sufficient statistics
-    mu_n, alpha_n, kappa_n, beta_n = update_stats(x, mu, alpha, kappa, beta) 
-    mu, kappa, alpha, beta = np.append(np.array([mu0]), mu_n), np.append(np.array([kappa0]), kappa_n), np.append(np.array([alpha0]), alpha_n), np.append(np.array([beta0]), beta_n) 
-    
+    #Start iteration   
+    for t,x in enumerate(data):      
+        #Calculate predictive probability for new data point
+        pred = pred_prob(x,mu,alpha,kappa,beta)
         
+        #Calculate growth probability 
+        prob_r[1:t+2,t+1] = prob_r[:t+1,t]* pred * (1-const_hazard(t+1,lam))
+
+        #Calculate changepoint probability
+        prob_r[0,t+1] = np.sum( prob_r[:t+1,t] * pred * const_hazard(t+1,lam))
+        
+        #Calculate evidence
+        sum_prob_r =  np.sum(prob_r[:,t+1])
+        
+        #Run length distribution
+        prob_r[:,t+1] /= sum_prob_r
+        
+        #Update sufficient statistics
+        mu_n, alpha_n, kappa_n, beta_n = update_stats(x, mu, alpha, kappa, beta) 
+        mu, kappa, alpha, beta = np.append(np.array([mu0]), mu_n), np.append(np.array([kappa0]), kappa_n), np.append(np.array([alpha0]), alpha_n), np.append(np.array([beta0]), beta_n) 
+        
+            
     return prob_r
 
 #Obtaining probailities
 p = inference(dataset)
 
 #Plotting
-figure = plt.figure()
-ax = figure.add_subplot(2,1,1)
-ax.plot(dataset)
-plt.show()
+#figure = plt.figure()
+#ax = figure.add_subplot(2,1,1)
+#ax.plot(dataset)
+#plt.show()
 
-plt.figure()
-plt.imshow(-np.log(p), interpolation='none', aspect='auto', origin='lower', cmap=plt.cm.Blues)
-plt.show()
+#plt.figure()
+#plt.imshow(-np.log(p), interpolation='none', aspect='auto', origin='lower', cmap=plt.cm.Blues)
+#plt.show()
