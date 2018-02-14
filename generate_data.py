@@ -71,14 +71,13 @@ def get_multi_stock(names):
   data = np.zeros(1)
   for name in names:
     td = get_stock(name)
-    max, min = td.max(), td.min()
-    td = (td - min) / (max - min)
     if data.size == 1:
       data = td
     else:
       data = np.vstack((data,td))
   return data.transpose()
-# data = get_multi_stock(['data/apple.csv', 'data/microsoft.csv'])
-# #data = generate_multivariate_example(20,50)
+
+# data, l = load_from_csv('dowj_1996-2018_with_date.csv')
 # print data
-# print len(data)+1
+# d = get_multi_stock(['data/apple.csv'])
+# print d
