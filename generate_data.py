@@ -46,26 +46,13 @@ def load_from_csv(filename):
   label = tmp[0:,0]
   return data, label
 
-# def save_stock_data(names):
-#   for name in names:
-#     data, dates = psd.get_stock_data(name)
-#     print data
-#     print dates
-#     csvfile = file([name, '.csv'].join(','), 'wb')
-#     writer = csv.writer(csvfile)
-#     data = [
-#         data, dates
-#     ]
-#     writer.writerows(data)
-#     csvfile.close()
-
 def get_stock(name):
   tmp = np.loadtxt(name, dtype=np.str, delimiter=",")
   size = tmp[1:, 0].size
   data = np.zeros(size)
   for index, item in enumerate(tmp[1:, 1]): 
     data[index] = item[1:-1] 
-  return data
+  return data[::-1]
 
 def get_multi_stock(names):
   data = np.zeros(1)
@@ -77,7 +64,20 @@ def get_multi_stock(names):
       data = np.vstack((data,td))
   return data.transpose()
 
-# data, l = load_from_csv('dowj_1996-2018_with_date.csv')
-# print data
-# d = get_multi_stock(['data/apple.csv'])
-# print d
+# file name with .csv
+# daily return
+def make_stock_gaussian(name):
+  data = get_stock(name)
+  r = np.diff(data) / data[0:(data.size-1)]
+  return r
+
+def make_multi_gaussian(names):
+  data = np.zeros(1)
+  for name in names:
+    td = make_stock_gaussian(name)
+    if data.size == 1:
+      data = td
+    else:
+      data = np.vstack((data,td))
+  return data.transpose()
+
