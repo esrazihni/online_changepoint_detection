@@ -6,6 +6,7 @@ from scipy.special import gamma, gammaln
 def generate_normal_time_series(num, minl=50, maxl=1000):
     data = np.array([], dtype=np.float64)
     partition = np.random.randint(minl, maxl, num)
+    print(partition)
     for p in partition:
         mean = np.random.randn()*10
         var = np.random.randn()*1
@@ -13,6 +14,7 @@ def generate_normal_time_series(num, minl=50, maxl=1000):
             var = var * -1
         tdata = np.random.normal(mean, var, p)
         data = np.concatenate((data, tdata))
+        #print(data)
     return data, partition
 
 def generate_poisson_time_series(num, minl=50, maxl=1000):
@@ -20,7 +22,7 @@ def generate_poisson_time_series(num, minl=50, maxl=1000):
     partition = np.random.randint(minl, maxl, num)
     for i,p in enumerate(partition):
         lamb = np.abs(np.random.randn())*(i+1)
-        #print(lamb)
+        print(lamb)
         tdata = np.random.poisson(lamb, p)
         data = np.concatenate((data, tdata))
     return data, partition
@@ -31,16 +33,16 @@ DIR_FILENAME = 'dowj_1996-2018.csv'
 dataset = np.genfromtxt(DIR_FILENAME, delimiter=',')
 #dataset = np.genfromtxt('data/population.csv',delimiter=',')
 
-dataset_n1, part_n1 = generate_normal_time_series(8, 50, 200)
-dataset_n2, part_n2 = generate_normal_time_series(8, 50, 200)
+#dataset_n1, part_n1 = generate_normal_time_series(8, 50, 200)
+#dataset_n2, part_n2 = generate_normal_time_series(8, 50, 200)
 #dataset_n  = [dataset_n1[:],dataset_n2[:]]
 
-#dataset_p, part_p = generate_poisson_time_series(8, 1000, 1200)
-DIR_FILENAME_POISSON = 'data/crimes_los_angeles_ordered_justnum.csv'
-dataset_p = np.genfromtxt(DIR_FILENAME_POISSON, delimiter=',')
-print('test a')
-print(dataset_p)
-print('test b')
+dataset_p, part_p = generate_poisson_time_series(8, 1000, 1200)
+#DIR_FILENAME_POISSON = 'crimes_los_angeles_ordered.csv'
+#dataset_p = np.genfromtxt(DIR_FILENAME_POISSON, delimiter=',')
+
+#print(dataset_p)
+
 # Define functions
 
 def const_hazard(r, lambda_):
@@ -121,28 +123,30 @@ def inference(data, dist, mu0=0, kappa0=1, alpha0=1, beta0=1, lam=[500], typ='me
 
     return prob_r
 
-p = inference(dataset_p,dist='poisson')
+#p = inference(dataset,dist='norm',typ='both_unknown')
 
 # plot
-fig = plt.figure(figsize=(15,6))
-plt.plot(dataset_p)
-for cp in np.cumsum(part_p):
-    plt.axvline(x=cp, color='r')
+#fig = plt.figure(figsize=(15,6))
+#plt.plot(dataset)
+#bottom-1 /100
 
-plt.show()
-
-plt.figure(figsize=[15,6])
-plt.imshow(-np.log(p), interpolation='none', aspect='auto',origin='lower', cmap=plt.cm.Blues)
+#for cp in np.cumsum(part_p):
+#    plt.axvline(x=cp, color='r')
 
 #plt.show()
 
-import matplotlib.cm as cm
-plt.pcolor(np.array(range(0, len(p[:,0]))),
-          np.array(range(0, len(p[:,0]))),
-          -np.log(p),
-          cmap=cm.Greys, vmin=0, vmax=30)
+#plt.figure(figsize=[15,6])
+#plt.imshow(-np.log(p), interpolation='none', aspect='auto',origin='lower', cmap=plt.cm.Blues)
+
+#plt.show()
+
+#import matplotlib.cm as cm
+#plt.pcolor(np.array(range(0, len(p[:,0]))),
+#          np.array(range(0, len(p[:,0]))),
+#          -np.log(p),
+#          cmap=cm.Greys, vmin=0, vmax=30)
 
 
-fig = plt.figure(figsize=(15,6))
-plt.plot(np.exp(p).sum(0))
-plt.show()
+#fig = plt.figure(figsize=(15,6))
+#plt.plot(np.exp(p).sum(0))
+#plt.show()

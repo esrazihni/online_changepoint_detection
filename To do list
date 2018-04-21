@@ -1,7 +1,0 @@
-1. Offline detection of changepoints to check our model's accuracy
-2. Find real time data and/or other datasets that would be interesting to present
-3. Extend the algorithm for other distributions (Poisson etc.)
-4. How to find the optimal lambda value from data
-5. Look at higher dimensional data for possibility to use with multivariate gaussion distribution (maybe different stock indicators
-could be a possible dataset to test)
-6. Start building up ideas on what to present
