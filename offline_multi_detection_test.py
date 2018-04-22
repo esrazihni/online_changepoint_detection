@@ -1,17 +1,12 @@
 from __future__ import division
 import matplotlib.pyplot as plt
 import offline_detection as offcd
-import seaborn
 import numpy as np
 from functools import partial
 import generate_data as gd
 
-# %matplotlib inline
-# %load_ext autoreload
-# %autoreload 2
 
-
-#data, partition = gd.generate_multivariate_example(200,500)
+#data, partition = gd.generate_multi_normal_time_series(3,200,500)
 data = gd.get_multi_stock(['data/apple.csv', 'data/microsoft.csv'])
 partition = np.zeros(0)
 

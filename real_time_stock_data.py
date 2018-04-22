@@ -3,8 +3,8 @@ import matplotlib.animation as animation
 import urllib.request, json
 import datetime
 from scipy import stats
-#from bayesian_ocd import *
-from changepoint_detection import *
+from bayesian_ocd import *
+
 
 
 def get_currency_data(name):
@@ -76,8 +76,7 @@ def plot_data(i):
 
     #print(x_new)
 
-    prob_r = inference(x_new,dist='norm',typ='both_unknown')
-    #p = inference(dataset,dist='norm',typ='both_unknown')
+    prob_r = inference(x_new,dist='norm')
 
     ax1.clear()
     ax2.clear()
